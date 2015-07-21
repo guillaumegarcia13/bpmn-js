@@ -96,45 +96,44 @@ describe('features/modeling - attach shape', function() {
 
   describe('rules', function() {
 
-    it('should allow morphing of an intermediateThrowEvent on a task', inject(function(elementFactory, bpmnRules) {
-      var intermediateThrowEvent = elementFactory.createShape({
+    it('should attach new IntermediateThrowEvent to Task', inject(function(elementFactory, bpmnRules) {
+      var eventShape = elementFactory.createShape({
         type: 'bpmn:IntermediateThrowEvent',
         x: 413, y: 254
       });
 
-      expect(bpmnRules.canAttach([ intermediateThrowEvent ], task)).to.equal('attach');
+      expect(bpmnRules.canAttach([ eventShape ], task)).to.equal('attach');
     }));
 
 
-    it('should allow morphing of an intermediateThrowEvent to a boundaryEvent on a subProcess',
-      inject(function(elementFactory, bpmnRules) {
-      var intermediateThrowEvent = elementFactory.createShape({
+    it('should attach new IntermediateThrowEvent to SubProcess border', inject(function(elementFactory, bpmnRules) {
+      var eventShape = elementFactory.createShape({
         type: 'bpmn:IntermediateThrowEvent',
         x: 413, y: 350
       });
 
       var position = {
-        x: intermediateThrowEvent.x,
-        y: intermediateThrowEvent.y
+        x: eventShape.x,
+        y: eventShape.y
       };
 
-      expect(bpmnRules.canAttach([ intermediateThrowEvent ], subProcessElement, position)).to.equal('attach');
+      expect(bpmnRules.canAttach([ eventShape ], subProcessElement, position)).to.equal('attach');
     }));
 
 
-    it('should allow dropping of an intermediateThrowEvent on a subProcess',
-      inject(function(elementFactory, bpmnRules) {
-      var intermediateThrowEvent = elementFactory.createShape({
+    it('should not attach new IntermediateThrowEvent to SubProcess inner', inject(function(elementFactory, bpmnRules) {
+
+      var eventShape = elementFactory.createShape({
         type: 'bpmn:IntermediateThrowEvent',
         x: 413, y: 250
       });
 
       var position = {
-        x: intermediateThrowEvent.x,
-        y: intermediateThrowEvent.y
+        x: eventShape.x,
+        y: eventShape.y
       };
 
-      expect(bpmnRules.canAttach([ intermediateThrowEvent ], subProcessElement, position)).to.equal(true);
+      expect(bpmnRules.canAttach([ eventShape ], subProcessElement, position)).to.equal(false);
     }));
 
   });

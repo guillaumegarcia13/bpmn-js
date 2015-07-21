@@ -55,23 +55,6 @@ function expectCanDrop(element, target, expectedResult) {
   expect(result).to.eql(expectedResult);
 }
 
-function expectCanDrop(element, target, expectedResult) {
-
-  var result;
-
-  TestHelper.getBpmnJS().invoke(function(elementRegistry, bpmnRules) {
-
-    element = elementRegistry.get(element);
-    target = elementRegistry.get(target);
-
-    expect(element).to.exist;
-    expect(target).to.exist;
-
-    result = bpmnRules.canDrop(element, target);
-  });
-
-  expect(result).to.eql(expectedResult);
-}
 
 function expectCanExecute(elements, target, rules) {
 
@@ -92,6 +75,7 @@ function expectCanExecute(elements, target, rules) {
 
   expect(results).to.eql(rules);
 }
+
 
 describe('features/modeling/rules - BpmnRules', function() {
 
@@ -564,13 +548,16 @@ describe('features/modeling/rules - BpmnRules', function() {
 
   });
 
+
   describe('boundary events', function() {
 
     var testXML = require('../../../../fixtures/bpmn/boundary-events.bpmn');
 
     beforeEach(bootstrapModeler(testXML, { modules: testModules }));
 
-    it('attach/move BoundaryEvent_1 to Process_1', inject(function (elementRegistry) {
+
+    it('attach/move BoundaryEvent -> Process', inject(function(elementRegistry) {
+
       // when
       var boundaryEvent = elementRegistry.get('BoundaryEvent_1');
 
@@ -585,7 +572,8 @@ describe('features/modeling/rules - BpmnRules', function() {
     }));
 
 
-    it('attach/move BoundaryEvent_1 to Task_2', inject(function (elementRegistry) {
+    it('attach/move BoundaryEvent -> Task', inject(function(elementRegistry) {
+
       // when
       var boundaryEvent = elementRegistry.get('BoundaryEvent_1');
 
@@ -600,7 +588,8 @@ describe('features/modeling/rules - BpmnRules', function() {
     }));
 
 
-    it('attach/move BoundaryEvent_1\'s label to SubProcess_1', inject(function (elementRegistry) {
+    it('attach/move BoundaryEvent label -> SubProcess', inject(function(elementRegistry) {
+
       // when
       var boundaryEvent = elementRegistry.get('BoundaryEvent_1'),
           label = boundaryEvent.label;
@@ -616,27 +605,13 @@ describe('features/modeling/rules - BpmnRules', function() {
     }));
 
 
-    it('attach/move BoundaryEvent_1 & it\'s label to Task_2', inject(function (elementRegistry) {
-      // when
-      var boundaryEvent = elementRegistry.get('BoundaryEvent_1'),
-          label = boundaryEvent.label;
-
-      var elements = [ boundaryEvent, label ];
-
-      // then
-      expectCanExecute(elements, 'Task_2', {
-        canAttach: 'attach',
-        canMove: false
-      });
-
-    }));
-
-
-    it('attach/move BoundaryEvent_1 & BoundaryEvent_2 to SubProcess_1', inject(function (elementRegistry) {
+    it('attach/move multiple BoundaryEvents -> SubProcess_1', inject(function (elementRegistry) {
       // when
       var boundaryEvent = elementRegistry.get('BoundaryEvent_1'),
           boundaryEvent2 = elementRegistry.get('BoundaryEvent_2');
 
+      // we assume boundary events and labels
+      // to be already filtered during move
       var elements = [ boundaryEvent, boundaryEvent2 ];
 
       // then
@@ -647,18 +622,20 @@ describe('features/modeling/rules - BpmnRules', function() {
     }));
 
 
-    it('attach/move SubProcess_1, BoundaryEvent_1 & label on Process_1', inject(function (elementRegistry) {
+    it('attach/move SubProcess, BoundaryEvent and label -> Process', inject(function (elementRegistry) {
       // when
       var subProcess = elementRegistry.get('SubProcess_1'),
           boundaryEvent = elementRegistry.get('BoundaryEvent_1'),
           label = boundaryEvent.label;
 
+      // we assume boundary events and labels
+      // to be already filtered during move
       var elements = [ subProcess, boundaryEvent, label ];
 
       // then
       expectCanExecute(elements, 'Process_1', {
         canAttach: false,
-        canMove: true
+        canMove: false
       });
     }));
 

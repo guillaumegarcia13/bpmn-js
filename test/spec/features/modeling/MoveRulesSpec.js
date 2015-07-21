@@ -5,11 +5,12 @@ var TestHelper = require('../../../TestHelper');
 /* global bootstrapModeler, inject */
 
 var coreModule = require('../../../../lib/core'),
+    modelingModule = require('../../../../lib/features/modeling'),
     moveModule = require('diagram-js/lib/features/move'),
-    snappingModule = require('../../../../lib/features/snapping'),
-    modelingModule = require('../../../../lib/features/modeling');
+    snappingModule = require('../../../../lib/features/snapping');
 
 var Events = require('diagram-js/test/util/Events');
+
 
 describe('features/modeling - move', function() {
 
@@ -86,7 +87,7 @@ describe('features/modeling - move', function() {
   }));
 
 
-  it('should move BoundaryEvent and Label with Parent', inject(function(canvas, elementRegistry, move, dragging) {
+  it('should move BoundaryEvent and Label with parent', inject(function(canvas, elementRegistry, move, dragging) {
     // given
     var boundaryEvent = elementRegistry.get('BoundaryEvent_1'),
         subProcess = elementRegistry.get('SubProcess_1'),
@@ -115,7 +116,8 @@ describe('features/modeling - move', function() {
   }));
 
 
-  it('should move BoundaryEvent and Label with Parent', inject(function(canvas, elementRegistry, move, dragging, selection) {
+  it('should move BoundaryEvent, Label and parent',
+    inject(function(canvas, elementRegistry, move, dragging, selection) {
     // given
     var boundaryEvent = elementRegistry.get('BoundaryEvent_1'),
         subProcess = elementRegistry.get('SubProcess_1'),
